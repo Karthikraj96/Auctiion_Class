@@ -1,22 +1,20 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const app = express();
-const nsmarty = require('nsmarty');
+const express = require('express')
+const app = express()
+const cors = require('cors')
+app.use(cors());
+require('dotenv').config()
+app.use(express.static('public'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+const connection = require('./db');
+function connect() {
+  connection.connect(function (err) {
+    err ? console.log(err) : console.log("connected  to db")
+  })
+}
+connect()
+require('./routes')(app);
 
-app.set('view engine', "html");
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static("public"));
-nsmarty.tpl_path = __dirname + '/public/tpl';
-app.get("/", function(req, res){
-   
-    var   stream = nsmarty.assign('index.tpl');
-    stream.pipe(res)
-});
-app.get("/index.html", function(req, res){
-   
-    var   stream = nsmarty.assign('index.tpl');
-    stream.pipe(res)
-});
-app.listen(3004, function(){
-    console.log("Server started on port:http://localhost:3004");
-});
+app.listen(3000, function () {
+  console.log("server stated at http://192.168.1.31:3000 or http://localhost:3000")
+})
